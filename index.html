@@ -11,6 +11,62 @@
 <link rel="preload" href="assets/fonts/Inter-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/img/hero-yurt-forsida.webp" as="image" fetchpriority="high">
 <link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "HealthAndBeautyBusiness",
+      "@id": "https://vokulandwellness.is/#wellness",
+      "name": "Vökuland Wellness",
+      "description": "Vellíðunarsetur í Eyjafjarðarsveit. Mongólskt kyrrðarhof með jóga, hljóðheilun, yoga nidra og Bowen meðferðum fyrir hópa, pör og einstaklinga.",
+      "url": "https://vokulandwellness.is/",
+      "telephone": "+354-663-0498",
+      "email": "info@vokulandwellness.is",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Vökuland 3",
+        "postalCode": "605",
+        "addressLocality": "Eyjafjarðarsveit",
+        "addressRegion": "Norðurland eystra",
+        "addressCountry": "IS"
+      },
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"], "opens": "10:00", "closes": "18:00" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "11:00", "closes": "17:00" }
+      ],
+      "priceRange": "3.500-25.000 kr.",
+      "currenciesAccepted": "ISK",
+      "makesOffer": [
+        { "@type": "Offer", "name": "Gyðjudekur og spa", "price": "12500", "priceCurrency": "ISK", "description": "4 klst. fyrir hópa og pör, verð á mann." },
+        { "@type": "Offer", "name": "Kyrrðarjóga og hljóðheilun", "price": "6500", "priceCurrency": "ISK", "description": "Fyrir allt að 14 manns." },
+        { "@type": "Offer", "name": "Hjartanæring og kakóró", "price": "8000", "priceCurrency": "ISK", "description": "120 mínútur." },
+        { "@type": "Offer", "name": "Paradekur", "price": "25000", "priceCurrency": "ISK", "description": "Fyrir pör, 12.500 kr. á einstakling." },
+        { "@type": "Offer", "name": "Yoga nidra djúpslökun", "price": "3500", "priceCurrency": "ISK", "description": "60 mínútur, 3 eða fleiri, verð á mann." },
+        { "@type": "Offer", "name": "Bowen bandvefslosun", "price": "8000", "priceCurrency": "ISK", "description": "60 mínútur." }
+      ]
+    },
+    {
+      "@type": "LodgingBusiness",
+      "@id": "https://vokulandwellness.is/#gisting",
+      "name": "Vökuland Guesthouse",
+      "description": "Vel útbúin íbúð í Eyjafjarðarsveit, 12 km frá Akureyri, opin allt árið. Heitur pottur með útsýni yfir fjörðinn.",
+      "url": "https://vokulandwellness.is/gisting/",
+      "telephone": "+354-663-0498",
+      "email": "info@vokulandwellness.is",
+      "address": { "@id": "https://vokulandwellness.is/#wellness" },
+      "petsAllowed": false,
+      "numberOfRooms": 2,
+      "amenityFeature": [
+        { "@type": "LocationFeatureSpecification", "name": "Heitur pottur", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Eldhús", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Grill", "value": true },
+        { "@type": "LocationFeatureSpecification", "name": "Sauna (gegn aukagjaldi)", "value": true }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
