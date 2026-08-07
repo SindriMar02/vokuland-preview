@@ -78,7 +78,7 @@ section { scroll-margin-top: clamp(88px, 10vh, 120px); }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 2px 12px;
+  padding: 10px 2px 12px;    /* 10 + 22 + 12 = 44px minimum tap target */
   color: var(--ink);
   font-size: 17px;
   font-weight: 500;
@@ -98,6 +98,8 @@ section { scroll-margin-top: clamp(88px, 10vh, 120px); }
 
 
 @media (hover: hover) and (pointer: fine) {
+  .rot-toggle:hover::before { border-color: var(--ink); }
+  .rot-rail:hover::before { background: rgba(242, 247, 245, .45); }
   .btn:hover { transform: translateY(-2px); }
   .btn-quiet:hover .bq-arrow { transform: translateX(5px); }
   .btn-quiet:hover .bq-rule { opacity: 1; }
@@ -406,6 +408,84 @@ section { scroll-margin-top: clamp(88px, 10vh, 120px); }
 }
 .quote cite { display: block; margin-top: 14px; font-style: normal; color: var(--ink-60); font-size: 15px; }
 
+/* ---------- testimonial rotator (JS upgrade; without JS the grid above stands) ---------- */
+.quotes.is-rot {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 900px;
+  min-height: 0;
+}
+.quotes.is-rot .quote {
+  grid-area: 1 / 1;                    /* every slide shares one cell: height = tallest, no JS measuring */
+  visibility: hidden;
+}
+.quotes.is-rot .quote.is-on { visibility: visible; }
+.quotes.is-rot .quote blockquote {
+  font-size: clamp(24px, 3vw, 40px);   /* one quote at a time earns editorial scale */
+  line-height: 1.22;
+  letter-spacing: -0.05em;
+}
+.rot-bar {
+  margin-top: clamp(28px, 4vh, 44px);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  max-width: 900px;
+}
+.rot-rails { display: flex; gap: 10px; flex: 1; }
+.rot-rail {
+  flex: 1;
+  position: relative;
+  height: 44px;                        /* 44px hit area, 1px visible line centred in it */
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.rot-rail::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: rgba(242, 247, 245, .2);
+}
+.rot-fill {
+  position: absolute;
+  left: 0; right: 0; top: 50%;
+  height: 1px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.rot-toggle {
+  flex: none;
+  position: relative;
+  width: 44px; height: 44px;           /* 44px hit area; the ring below stays 34px visually */
+  display: grid;
+  place-items: center;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+.rot-toggle::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 34px; height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(242, 247, 245, .22);
+  border-radius: 50%;
+  transition: border-color .18s var(--ease-soft);
+}
+.rot-toggle svg { display: block; position: relative; }
+.rot-count {
+  flex: none;
+  color: var(--ink-60);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ---------- booking ---------- */
 .booking { padding: clamp(96px, 14vh, 176px) var(--pad-x) clamp(96px, 14vh, 160px); text-align: left; }
 .booking-sub { margin-top: 20px; color: var(--ink-60); font-size: 17px; }
@@ -484,3 +564,6 @@ section { scroll-margin-top: clamp(88px, 10vh, 120px); }
   .btn:hover { transform: none !important; }
   .bq-arrow { transition-property: none !important; }
 }
+
+/* footer contact links are the most-tapped thing on a phone: give them a real target */
+.foot address a { display: inline-block; padding: 12px 0; }

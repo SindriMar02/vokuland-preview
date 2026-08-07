@@ -310,17 +310,147 @@
       .from(dIn, { y: LINE_Y, duration: .8, ease: EASE }, '-=.66');
   });
 
-  /* == quotes: per-quote line-masked text + cite == */
-  document.querySelectorAll('.quotes .quote').forEach(function (q, i) {
-    var bLines = splitLines(q.querySelector('blockquote'));
-    var cIn = wrapMask(q.querySelector('cite'));
-    var tl = gsap.timeline({
-      scrollTrigger: { trigger: q, start: 'top 92%', once: true },
-      delay: (i % 2) * .09
+  /* == TESTIMONIAL ROTATER ==
+     One quote at a time, at editorial scale, using the page's own devices: line-masks for the
+     text and the drawing hairline as the progress rail. Bespoke rather than vendored: every
+     catalogue result was a React card-with-avatar carousel that would have needed a full
+     re-skin and a port off React to live here.
+     The dwell timer and the rail are ONE tween, so the rail always shows the true time left
+     and pausing the tween pauses the rotation. Handoff is sequential by construction (out
+     completes, then in starts) so two quotes can never be on screen together, and no gap can
+     leave the slot empty. Pauses on hover, on keyboard focus, when the tab is hidden, and on
+     demand via the toggle (WCAG 2.2.2). Under reduced motion this whole block never runs and
+     the static grid stands. */
+  var qList = document.querySelector('.quotes');
+  var slides = qList ? [].slice.call(qList.querySelectorAll('.quote')) : [];
+
+  if (slides.length > 1) {
+    var DWELL = 5.6, OUT_D = .42, IN_D = .72;
+    var idx = 0, userPaused = false, hovered = false, focused = false;
+
+    // Class FIRST: it changes the font size and column width, and any pre-baked line
+    // breaks would be measured against the old ones.
+    qList.classList.add('is-rot');
+    // ONE mask per element rather than per line: the quote then re-wraps naturally at any
+    // width, so nothing goes stale on resize. Life comes from the blockquote/cite stagger.
+    var parts = slides.map(function (q) {
+      return { lines: wrapMask(q.querySelector('blockquote')), cite: wrapMask(q.querySelector('cite'))[0] };
     });
-    tl.from(bLines, { y: LINE_Y, duration: .85, ease: EASE, stagger: LINE_STAG })
-      .from(cIn, { y: LINE_Y, duration: .75, ease: EASE }, '-=.55');
-  });
+
+    qList.setAttribute('aria-live', 'off');   // auto-advance must not announce every 5.6s
+    var region = qList.parentNode;
+    region.setAttribute('role', 'region');
+    region.setAttribute('aria-roledescription', 'ummælaborði');
+    region.setAttribute('aria-label', 'Ummæli gesta');
+    slides.forEach(function (q, i) {
+      q.setAttribute('role', 'group');
+      q.setAttribute('aria-roledescription', 'ummæli');
+      q.setAttribute('aria-label', (i + 1) + ' af ' + slides.length);
+      q.setAttribute('aria-hidden', String(i !== 0));
+      if (i === 0) q.classList.add('is-on');
+    });
+
+    // controls
+    var bar = document.createElement('div');
+    bar.className = 'rot-bar';
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'rot-toggle';
+    var ICON_PAUSE = '<svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><rect x="0" y="0" width="3" height="12" fill="currentColor"/><rect x="7" y="0" width="3" height="12" fill="currentColor"/></svg>';
+    var ICON_PLAY = '<svg width="10" height="12" viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z" fill="currentColor"/></svg>';
+    toggle.innerHTML = ICON_PAUSE;
+    toggle.setAttribute('aria-label', 'Gera hlé á ummælum');
+    bar.appendChild(toggle);
+    var rails = document.createElement('div');
+    rails.className = 'rot-rails';
+    var fills = slides.map(function (_, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rot-rail';
+      b.setAttribute('aria-label', 'Ummæli ' + (i + 1) + ' af ' + slides.length);
+      var f = document.createElement('span');
+      f.className = 'rot-fill';
+      b.appendChild(f);
+      b.addEventListener('click', function () { go(i, true); });
+      rails.appendChild(b);
+      return f;
+    });
+    bar.appendChild(rails);
+    var count = document.createElement('span');
+    count.className = 'rot-count';
+    count.setAttribute('aria-hidden', 'true');
+    count.textContent = '01/0' + slides.length;
+    bar.appendChild(count);
+    qList.parentNode.insertBefore(bar, qList.nextSibling);
+
+    var timer = null;
+    function armTimer() {
+      if (timer) timer.kill();
+      gsap.set(fills, { scaleX: 0 });
+      // one tween is both the dwell clock and the visible rail
+      timer = gsap.to(fills[idx], {
+        scaleX: 1, duration: DWELL, ease: 'none',
+        onComplete: function () { go((idx + 1) % slides.length, false); }
+      });
+      if (userPaused || hovered || focused || document.hidden) timer.pause();
+    }
+
+    var moving = false;
+    function go(next, manual) {
+      if (moving || next === idx) return;
+      moving = true;
+      if (timer) timer.kill();
+      var from = idx, cur = parts[from], nxt = parts[next];
+      qList.setAttribute('aria-live', manual ? 'polite' : 'off');
+      var tl = gsap.timeline({
+        onComplete: function () { moving = false; idx = next; armTimer(); }
+      });
+      tl.to([].concat(cur.lines, cur.cite), {
+          yPercent: -115, duration: OUT_D, ease: 'power2.in', stagger: .035
+        })
+        // the exact handoff: the outgoing slide leaves the frame before the next enters
+        .add(function () {
+          slides[from].classList.remove('is-on');
+          slides[from].setAttribute('aria-hidden', 'true');
+          slides[next].classList.add('is-on');
+          slides[next].setAttribute('aria-hidden', 'false');
+          gsap.set(fills[from], { scaleX: manual ? 0 : 1 });
+          count.textContent = '0' + (next + 1) + '/0' + slides.length;
+        })
+        .fromTo([].concat(nxt.lines, nxt.cite),
+          { yPercent: 115 },
+          { yPercent: 0, duration: IN_D, ease: EASE, stagger: .05 });
+    }
+
+    function sync() {
+      if (!timer) return;
+      if (userPaused || hovered || focused || document.hidden) timer.pause(); else timer.resume();
+    }
+    toggle.addEventListener('click', function () {
+      userPaused = !userPaused;
+      toggle.innerHTML = userPaused ? ICON_PLAY : ICON_PAUSE;
+      toggle.setAttribute('aria-label', userPaused ? 'Halda áfram með ummæli' : 'Gera hlé á ummælum');
+      sync();
+    });
+    // a moving target must stop for pointer AND keyboard users
+    region.addEventListener('mouseenter', function () { hovered = true; sync(); });
+    region.addEventListener('mouseleave', function () { hovered = false; sync(); });
+    region.addEventListener('focusin', function () { focused = true; sync(); });
+    region.addEventListener('focusout', function () { focused = false; sync(); });
+    bar.addEventListener('mouseenter', function () { hovered = true; sync(); });
+    bar.addEventListener('mouseleave', function () { hovered = false; sync(); });
+    bar.addEventListener('focusin', function () { focused = true; sync(); });
+    bar.addEventListener('focusout', function () { focused = false; sync(); });
+    document.addEventListener('visibilitychange', sync);
+
+    // first quote rises with the section, then the clock starts
+    gsap.timeline({ scrollTrigger: { trigger: qList, start: 'top 88%', once: true } })
+      .from([].concat(parts[0].lines, parts[0].cite), {
+        yPercent: 115, duration: .85, ease: EASE, stagger: .05
+      })
+      .from(bar, { y: 20, opacity: 0, duration: .6, ease: EASE }, '-=.4')
+      .add(armTimer);
+  }
 
   /* == remaining block reveals (apt strip, media bands, booking bits) == */
   [
