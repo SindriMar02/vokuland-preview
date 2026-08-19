@@ -14,11 +14,25 @@ Live preview: https://sindrimar02.github.io/vokuland-preview/  (noindex, preflig
 | Hours | Mán-fös 10:00-18:00 · Lau 11:00-17:00 · Sun lokað | site homepage |
 
 ## The observation, with dated proof (rule 0)
-- `/vellidan/` renders ONLY the heading "Vellíðan", no content. **Re-verified 2026-08-07.**
-- Prices for kyrrðarjóga disagree between their own pages: `/verdskra/` says 6.500 kr. for up to 14
-  people; `/kyrrdaryoga-og-hljodheilun/` says 6.500 kr. per person for 3-10 and 5.500 kr. for 10+.
-  **Do not resolve this for them and do not restate it as fact anywhere client-facing.**
-- Every photo is a 2022 upload; footer reads "Copyright © 2022".
+
+### RETRACTED 2026-08-08 — the "empty pages" claim was FALSE. Sindri caught it before sending.
+I tested `https://vokulandwellness.is/vellidan/`, a slug I CONSTRUCTED myself. Their menu actually
+links Vellíðan to **`/vellidan-2/`**, which is a full page (120 words, 3 images, 1751px tall).
+`/vellidan/` is an unlinked orphan no visitor ever reaches. An email telling this owner her page was
+empty would have been simply wrong, and this is precisely the Fisk Kompaní failure in rule 0.
+**Rule learned: take the URL from the site's own navigation. Never audit a slug you invented.**
+The kyrrðarjóga price claim is ALSO cut: verðskrá says 6.500 kr "allt að 14 manns" while the detail
+page says 6.500 kr per person for 3-10 and 5.500 kr for 10+. That may be summary-vs-detail rather
+than a contradiction, and it is not clean enough to assert to an owner.
+
+### VERIFIED observation now used in the email (headless, 2026-08-08)
+- **There is no way to book a time anywhere on the site.** `/hopar/`, the page titled
+  "Bóka meðferðir", contains **0 forms**, no date picker, no calendar, no booking vendor in the
+  markup. `/boka-i-einstaklingsmedferdir/` has ONE plain Elementor contact form (name, email, a
+  treatment dropdown, free-text message) and no date picker. A guest cannot see what is free; they
+  send a message and wait.
+- Footer reads "Copyright © 2022 Vökuland Wellness"; every photo is a 2022 upload. (True, but kept
+  OUT of the email: it is not actionable and reads as a dig.)
 
 ## Money block — INCOMPLETE, do not invent (see [[lead-commercial-qualification]])
 - Turnover: **unknown.** No kennitala found; likely sole proprietorship, so no public ársreikningur.
@@ -37,9 +51,8 @@ Sæl Sólveig,
 
 Ég rakst á Vökuland og staldraði við. Mongólskt kyrrðarhof uppi í Eyjafjarðarsveit, gong og kakó og
 djúpslökun, og heitur pottur með útsýni yfir allan fjörðinn. Umsagnirnar ykkar tala sínu máli, fólk
-lýsir stundunum hjá ykkur eins og einhverju sem það gleymir ekki. Það eina sem mig vantaði var
-vefsíða sem sýnir þetta. Síðan sem heitir Vellíðan er til dæmis tóm þegar hún er opnuð, og verðin
-fyrir kyrrðarjóga eru ekki þau sömu á verðskránni og á síðunni um kyrrðarjóga.
+lýsir stundunum hjá ykkur eins og einhverju sem það gleymir ekki. Það eina sem ég staldraði við er
+að gestur sem vill panta tíma sér hvergi hvað er laust, heldur sendir skilaboð og bíður eftir svari.
 
 Mér fannst það synd, svo ég settist niður og hannaði frumgerð að nýrri forsíðu fyrir ykkur. Þetta
 kostar ykkur ekki neitt og því fylgir engin skuldbinding.
@@ -47,9 +60,13 @@ kostar ykkur ekki neitt og því fylgir engin skuldbinding.
 Hana má skoða hér hvenær sem er, og hún virkar vel í síma:
 [HLEKKUR]
 
-Hugmyndin er einföld. Að fólk sjái hofið og pottinn strax, viti hvað er í boði og hvað það kostar,
-og finni greiða leið til að hafa samband. Ég sé líka um hýsingu, viðhald og uppfærslur á síðum sem
-ég geri, ef það er eitthvað sem þið hafið áhuga á.
+Hugmyndin er einföld. Að fólk sjái hofið og pottinn strax, viti hvað er í boði og hvað það kostar.
+Frumgerðin er hönnuð fyrir símann fyrst, því þar leita flestir að svona stund, og hún virkar jafn
+vel í tölvu og spjaldtölvu.
+
+Næsta skref væri bókunarkerfi beint á síðunni, þar sem gesturinn velur lausan tíma sjálfur og fær
+staðfestingu strax. Það sparar bæði tölvupósta og símtöl, og þið sæjuð allar bókanir á einum stað.
+Ég sé svo um hýsingu, viðhald og uppfærslur á þeim síðum sem ég geri.
 
 Ef ykkur líst vel á þetta gæti ég klárað vefinn í heild, en annars vona ég að þið hafið að minnsta
 kosti gaman af því að skoða hugmyndina.
